@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file original="" product-name="Paessler.AnchorLink" source-language="en" target-language="de" datatype="plaintext">
+		<body>
+			<trans-unit id="groups.anchor" xml:space="preserve">
+				<source>Anchor</source>
+				<target>Anker</target>
+			</trans-unit>
+			<trans-unit id="properties.anchor" xml:space="preserve">
+				<source>Anchor id</source>
+				<target>Anker-ID</target>
+			</trans-unit>
+			<trans-unit id="properties.anchor.ui.help.message" xml:space="preserve">
+				<source>Fill in the anchor id in order to be able to link to this node. It must not contain spaces and any other special characters.</source>
+				<target>Geben Sie die Anker-ID ein, um eine Verknüpfung zu diesem Knoten herstellen zu können. Es darf keine Leerzeichen und keine anderen Sonderzeichen enthalten.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

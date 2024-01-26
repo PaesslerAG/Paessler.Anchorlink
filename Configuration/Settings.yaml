@@ -1,0 +1,58 @@
+Neos:
+  Neos:
+    fusion:
+      autoInclude:
+        Paessler.AnchorLink: true
+    userInterface:
+      translation:
+        autoInclude:
+          Paessler.AnchorLink:
+            - Main
+            - 'NodeTypes/*'
+    Ui:
+      resources:
+        javascript:
+          'Paessler.AnchorLink':
+            resource: 'resource://Paessler.AnchorLink/Public/JavaScript/AnchorLink/Plugin.js'
+      frontendConfiguration:
+        'Paessler.AnchorLink':
+          displaySearchBox: true
+          threshold: 0
+  Flow:
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            requestPatterns:
+              'Paessler.AnchorLink:Backend':
+                pattern: ControllerObjectName
+                patternOptions:
+                  controllerObjectNamePattern: 'Paessler\AnchorLink\Controller\.*'
+    mvc:
+      routes:
+        'Paessler.AnchorLink':
+          position: 'before Neos.Neos'
+Paessler:
+  AnchorLink:
+    # The following configuration is only considered if the default ContentNodeAnchorLinkResolver is used:
+
+    # Only nodes of this type will appear in the "Choose link anchor" selector
+    contentNodeType: 'Paessler.AnchorLink:AnchorMixin'
+    # Eel Expression that returns the anchor (without leading "#") for a given node
+    anchor: ${node.properties.anchor || node.name}
+    # Eel Expression that returns the label to be rendered in the anchor selector in the Backend
+    label: ${node.label}
+    # Eel Expression that returns a group for the anchor selector (empty string == no grouping)
+    group: ${I18n.translate(node.nodeType.label)}
+    # Eel Expression that returns an icon for the anchor selector (empty string = no icon)
+    icon: ${node.nodeType.fullConfiguration.ui.icon}
+
+    # Eel Helpers that are available in the Eel expressions above
+    eelContext:
+      String: Neos\Eel\Helper\StringHelper
+      Array: Neos\Eel\Helper\ArrayHelper
+      Date: Neos\Eel\Helper\DateHelper
+      Configuration: Neos\Eel\Helper\ConfigurationHelper
+      Math: Neos\Eel\Helper\MathHelper
+      Json: Neos\Eel\Helper\JsonHelper
+      I18n: Neos\Flow\I18n\EelHelper\TranslationHelper

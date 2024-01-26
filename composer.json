@@ -1,0 +1,19 @@
+{
+    "name": "paessler/anchorlink",
+    "description": "Extends the Neos CKE5 link-editor custom anchor link option",
+    "type": "neos-plugin",
+    "license": "MIT",
+    "require": {
+        "neos/neos-ui": "^7.0 || ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Paessler\\AnchorLink\\": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Paessler.AnchorLink"
+        }
+    }
+}

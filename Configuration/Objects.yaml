@@ -1,0 +1,4 @@
+'Paessler\AnchorLink\Controller\AnchorLinkController':
+  properties:
+    resolver:
+      object: Paessler\AnchorLink\ContentNodeAnchorLinkResolver

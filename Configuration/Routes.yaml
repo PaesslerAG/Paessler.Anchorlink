@@ -1,0 +1,8 @@
+- name: "Paessler.AnchorLink options resolver route"
+  uriPattern: "link-resolver/{@action}"
+  defaults:
+    "@package": "Paessler.AnchorLink"
+    "@controller": "AnchorLink"
+    "@format": "json"
+    "@action": "resolveAnchors"
+  appendExceedingArguments: TRUE

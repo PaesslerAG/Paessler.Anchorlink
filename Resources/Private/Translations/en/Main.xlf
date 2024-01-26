@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file original="" product-name="Paessler.AnchorLink" source-language="en" datatype="plaintext">
+		<body>
+			<trans-unit id="linkAnchor" xml:space="preserve">
+				<source>Link anchor</source>
+			</trans-unit>
+			<trans-unit id="error" xml:space="preserve">
+				<source>There was an error resolving link anchors</source>
+			</trans-unit>
+			<trans-unit id="placeholder" xml:space="preserve">
+				<source>Choose link anchor</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

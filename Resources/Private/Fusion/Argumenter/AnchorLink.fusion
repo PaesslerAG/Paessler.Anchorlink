@@ -1,0 +1,6 @@
+# Meant to be used as a processor, e.g.:
+# prototype(Neos.Neos:Content).@process.anchor = Paessler.AnchorLink:AnchorLinkAugmenter
+# @neoscs-ignore-next-line
+prototype(Paessler.AnchorLink:AnchorLinkAugmenter) < prototype(Neos.Fusion:Augmenter) {
+    id = ${Neos.Node.isOfType(node, 'Paessler.AnchorLink:AnchorMixin') && !String.isBlank(q(node).property('anchor')) ? q(node).property('anchor') : node.name}
+}

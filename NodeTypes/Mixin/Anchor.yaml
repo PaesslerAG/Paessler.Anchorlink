@@ -1,0 +1,20 @@
+'Paessler.AnchorLink:AnchorMixin':
+  abstract: true
+  ui:
+    inspector:
+      groups:
+        anchor:
+          label: i18n
+  properties:
+    anchor:
+      type: string
+      ui:
+        reloadIfChanged: true
+        label: i18n
+        inspector:
+          group: anchor
+        help:
+          message: i18n
+      validation:
+        'Neos.Neos/Validation/RegularExpressionValidator':
+          regularExpression: '/^([a-zA-Z\d\-._~\!$&()*+,;=:@%\/?]*)$/'
