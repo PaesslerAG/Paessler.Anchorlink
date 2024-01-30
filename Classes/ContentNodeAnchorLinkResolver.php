@@ -2,15 +2,18 @@
 
 namespace Paessler\AnchorLink;
 
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindDescendantNodesFilter;
 use Neos\Eel\Exception as EelException;
 use Neos\Flow\Annotations as Flow;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\Flow\ObjectManagement\DependencyInjection\DependencyProxy;
 use Neos\Neos\Service\LinkingService;
 use Neos\Eel\EelEvaluatorInterface;
 use Neos\Eel\Utility;
 use Neos\Eel\FlowQuery\FlowQuery;
-use Neos\Neos\Domain\Service\NodeSearchService;
+use Neos\Neos\FrontendRouting\SiteDetection\SiteDetectionResult;
+use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 
 /**
  * Create link anchors based on all matching nodes within the target link node
@@ -19,11 +22,8 @@ use Neos\Neos\Domain\Service\NodeSearchService;
  */
 class ContentNodeAnchorLinkResolver implements AnchorLinkResolverInterface
 {
-    /**
-     * @Flow\Inject
-     * @var NodeSearchService
-     */
-    protected $nodeSearchService;
+    #[Flow\Inject]
+    protected ContentRepositoryRegistry $contentRepositoryRegistry;
 
     /**
      * @Flow\Inject
@@ -71,31 +71,32 @@ class ContentNodeAnchorLinkResolver implements AnchorLinkResolverInterface
      * @inheritDoc
      * @throws EelException
      */
-    public function resolve(NodeInterface $node, string $link, string $searchTerm): array
+    public function resolve(Node $node, string $link, string $searchTerm): array
     {
-        $context = $node->getContext();
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
         $targetNode = null;
 
         if ((preg_match(LinkingService::PATTERN_SUPPORTED_URIS, $link, $matches) === 1) && $matches[1] === 'node') {
-            $targetNode = $context->getNodeByIdentifier($matches[2]) ?? $node;
+            $targetNode = $subgraph->findNodeById(NodeAggregateId::fromString($matches[2]));
+            //$targetNode = $context->getNodeByIdentifier($matches[2]) ?? $node;
         }
         if ($targetNode === null) {
             return [];
         }
+        $targetSubgraph = $this->contentRepositoryRegistry->subgraphForNode($targetNode);
+        $nodes  = [];
+        $search = ($searchTerm !== '' ? $searchTerm : null);
+        $nodeFilter = FindDescendantNodesFilter::create(nodeTypes: $this->contentNodeType, searchTerm: $search);
 
-        if ($searchTerm !== '') {
-            $nodes = $this->nodeSearchService->findByProperties($searchTerm, [$this->contentNodeType], $context, $targetNode->getPrimaryChildNode());
-        } else {
-            $q = new FlowQuery([$targetNode]);
-            /** @noinspection PhpUndefinedMethodInspection */
-            $nodes = $q->children('[instanceof Neos.Neos:ContentCollection]')->find('[instanceof ' . $this->contentNodeType . ']')->get();
+        foreach ($targetSubgraph->findDescendantNodes($targetNode->nodeAggregateId, $nodeFilter) as $descendant) {
+            $nodes[] = $descendant;
         }
 
         if ($this->eelEvaluator instanceof DependencyProxy) {
             $this->eelEvaluator->_activateDependency();
         }
 
-        return array_values(array_map(function (NodeInterface $node) {
+        return array_values(array_map(function (Node $node) {
             $anchor = (string)Utility::evaluateEelExpression($this->anchor, $this->eelEvaluator, ['node' => $node], $this->contextConfiguration);
             $label = (string)Utility::evaluateEelExpression($this->label, $this->eelEvaluator, ['node' => $node], $this->contextConfiguration);
             $group = (string)Utility::evaluateEelExpression($this->group, $this->eelEvaluator, ['node' => $node], $this->contextConfiguration);
